@@ -39,6 +39,10 @@ window.addEventListener("resize", function () {
 });
 const danmuku = async () => method.danmuSpeedAdd();
 const tts = async () => method.ttsSpeedAdd();
+let is_danmu_display_enabled = !0
+let is_danmu_tts_enabled = !1
+let is_superchat_display_enabled = !0
+let is_superchat_tts_enabled = !0
 const method = {
     data: {
         timer: null,
@@ -117,8 +121,7 @@ const method = {
     danmuSpeedAdd: function () {
         setInterval(() => {
             if (method.danmus.get().length) {
-                method.addDanmuItem(method.danmus.get()[0]);
-                method.addDanmuItem(method.danmus.remove());
+                method.addDanmuItem(method.danmus.get().shift());
             }
         }, 10); //10毫秒
     },
@@ -126,34 +129,37 @@ const method = {
         setInterval(() => {
             if (method.data.getAudio().paused) {
                 if (method.tts.get().length) {
-                    $("#au").attr('src', "https://fanyi.baidu.com/gettts?lan=zh&spd=5&source=web&text=" + method.tts.get()[0]);
+                    let danmu = method.tts.get().shift()
+                    $("#au").attr('src', `https://fanyi.baidu.com/gettts?lan=zh&spd=5&source=web&text=${danmu}`);
                     method.data.getAudio().play()
-                    //	  var player=$("#au")[0];
-                    //	 if (player.paused){ /*如果已经暂停*/
-                    //            player.play(); /*播放*/
-                    //        }else {
-                    //            player.pause();/*暂停*/
-                    //        }
-                    method.addDanmuItem(method.tts.remove());
                 }
             }
         }, 10); //10毫秒
     },
     //need jq //分类弹幕信息
     parseDanmuMessage: function (jsons) {
-        jsons = JSON.parse(jsons);
-        if (jsons.cmd.startsWith("DANMU_MSG")) {
-            //			  console.log(jsons);
-            const danmu = {
-                name: '',
-                message: ''
+        data = JSON.parse(jsons);
+        // console.log(jsons);
+        let danmu;
+        if (is_danmu_display_enabled && data.cmd.startsWith("DANMU_MSG")) {
+            danmu = {
+                'name': data.info[2][1],
+                'message': data.info[1],
             };
-            danmu.name = jsons.info[2][1];
-            danmu.message = jsons.info[1];
             method.danmus.push(danmu);
-            method.tts.push(danmu.message);
-        } else {
-            //			  console.log("new data:"+jsons);
+            if (is_danmu_tts_enabled) {
+                method.tts.push(`${danmu.name}说：${danmu.message}`);
+            }
+        }
+        else if (is_superchat_display_enabled && data.cmd.startsWith("SUPER_CHAT_MESSAGE")) {
+            danmu = {
+                'name': data['data']['user_info']['uname'],
+                'message': data['data']['message'],
+            }
+            method.danmus.push(danmu);
+            if (is_superchat_tts_enabled) {
+                method.tts.push(`${danmu.name}说：${danmu.message}`);
+            }
         }
     },
     //need jq  添加弹幕ui
@@ -376,7 +382,7 @@ function openSocket(socket, ip, roomid, timer) {
         };
         // 关闭事件
         socket.onclose = function () {
-            console.log("连接已关闭，网页显示弹幕失败");
+            console.log("连接已关闭，不再显示新弹幕");
         };
         // 发生了错误事件
         socket.onerror = function () {

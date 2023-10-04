@@ -359,8 +359,8 @@ function openSocket(socket, ip, roomid, timer) {
     if (typeof (WebSocket) == "undefined") {
         alert("您的浏览器不支持WebSocket，显示弹幕功能异常，请升级你的浏览器版本，推荐谷歌，连接弹幕服务器失败");
     } else {
-        console.log("弹幕服务器正在连接");
-        method.danmus.push({"name": "弹幕姬", "message": "弹幕服务器正在连接"});
+        console.log(`弹幕服务器正在连接，房间号${firstData.roomid}`);
+        method.danmus.push({"name": "弹幕姬", "message": `弹幕服务器正在连接，房间号${firstData.roomid}`});
         var socketUrl = ip;
         if (socket != null) {
             socket.close();

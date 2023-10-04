@@ -10,6 +10,12 @@ $(function () {
     method.tts.set(ttts);
     $(document).on('click', '#connect-btn', function () {
         if (!method.data.getSocket()) {
+            is_danmu_display_enabled = $('#danmu_display')[0].checked;
+            is_danmu_tts_enabled = $('#danmu_speak')[0].checked;
+            is_superchat_display_enabled = $('#superchat_display')[0].checked;
+            is_superchat_tts_enabled = $('#superchat_speak')[0].checked;
+            console.log(is_danmu_display_enabled, is_danmu_tts_enabled, is_superchat_display_enabled, is_superchat_tts_enabled);
+
             openSocket(method.data.getSocket(), "wss://broadcastlv.chat.bilibili.com:2245/sub", $("#roomid").val(), method.data.getTimer());
             $(this).html('断开');
         } else {

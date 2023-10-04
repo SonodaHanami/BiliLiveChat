@@ -6,7 +6,7 @@
 	<meta name="referrer" content="never">
 	<meta name="renderer" content="webkit">
 	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
-	<title>语音读醒目留言</title>
+	<title>语音朗读弹幕姬</title>
 	<style type="text/css">
 		#live,
 		body,
@@ -97,7 +97,13 @@
 <body>
 	<div id="audios"><audio src="" controls="controls" id="au"></audio></div>
 	<div id="live">
-		<div style="margin: 0 auto;">能用就行.jpg 之后再慢慢改</div>
+		<div style="margin: 0 auto;">
+			<p>能用就行.jpg 之后再慢慢改</p>
+			<p><input type="checkbox" id="danmu_display" name="danmu_display" checked><label for="danmu_display">显示普通弹幕</label></p>
+			<p><input type="checkbox" id="danmu_speak" name="danmu_speak"><label for="danmu_speak">朗读普通弹幕</label></p>
+			<p><input type="checkbox" id="superchat_display" name="superchat_display" checked><label for="superchat_display">显示醒目留言</label></p>
+			<p><input type="checkbox" id="superchat_speak" name="superchat_speak" checked><label for="superchat_speak">朗读醒目留言</label></p>
+		</div>
 		<div id="danmu-connect">
 			<span style="margin: 0 auto;">
 				<input type="number" id="roomid" name="roomid">

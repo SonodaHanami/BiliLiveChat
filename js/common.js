@@ -354,6 +354,7 @@ function openSocket(socket, ip, roomid, timer) {
         alert("您的浏览器不支持WebSocket，显示弹幕功能异常，请升级你的浏览器版本，推荐谷歌，连接弹幕服务器失败");
     } else {
         console.log("弹幕服务器正在连接");
+        method.danmus.push({"name": "弹幕姬", "message": "弹幕服务器正在连接"});
         var socketUrl = ip;
         if (socket != null) {
             socket.close();
@@ -367,6 +368,7 @@ function openSocket(socket, ip, roomid, timer) {
         // 打开事件
         socket.onopen = function () {
             console.log("连接已打开");
+            method.danmus.push({"name": "弹幕姬", "message": "连接已打开"});
             socket.send(method.sendData(JSON.stringify(firstData), 1, 7, 1));
             socket.send(method.sendData(heartData, 1, 2, 1));
             //发送心跳包
@@ -389,10 +391,12 @@ function openSocket(socket, ip, roomid, timer) {
         // 关闭事件
         socket.onclose = function () {
             console.log("连接已关闭，不再显示新弹幕");
+            method.danmus.push({"name": "弹幕姬", "message": "连接已关闭，不再显示新弹幕"});
         };
         // 发生了错误事件
         socket.onerror = function () {
             console.log("连接到弹幕服务器发生了错误，网页显示弹幕失败");
+            method.danmus.push({"name": "弹幕姬", "message": "连接到弹幕服务器发生了错误，网页显示弹幕失败"});
         }
     }
 }

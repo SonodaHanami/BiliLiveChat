@@ -153,22 +153,26 @@ const method = {
         data = JSON.parse(jsons);
         // console.log(jsons);
         let danmu;
-        if (is_danmu_display_enabled && data.cmd.startsWith("DANMU_MSG")) {
+        if (data.cmd.startsWith("DANMU_MSG")) {
             danmu = {
                 'name': data.info[2][1],
                 'message': data.info[1],
-            };
-            method.danmus.push(danmu);
+            }
+            if (is_danmu_display_enabled) {
+                method.danmus.push(danmu);
+            }
             if (is_danmu_tts_enabled) {
                 method.tts.push(`${danmu.name}说：${danmu.message}`);
             }
         }
-        else if (is_superchat_display_enabled && data.cmd.startsWith("SUPER_CHAT_MESSAGE")) {
+        else if (data.cmd.startsWith("SUPER_CHAT_MESSAGE")) {
             danmu = {
                 'name': data['data']['user_info']['uname'],
                 'message': data['data']['message'],
             }
-            method.danmus.push(danmu);
+            if (is_superchat_display_enabled) {
+                method.danmus.push(danmu);
+            }
             if (is_superchat_tts_enabled) {
                 method.tts.push(`${danmu.name}说：${danmu.message}`);
             }

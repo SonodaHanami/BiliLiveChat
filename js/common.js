@@ -14,10 +14,12 @@ $(function () {
             is_danmu_tts_enabled = $('#danmu_speak')[0].checked;
             is_superchat_display_enabled = $('#superchat_display')[0].checked;
             is_superchat_tts_enabled = $('#superchat_speak')[0].checked;
+            is_yubo_enabled = $('#yubo_speak')[0].checked;
             $('#danmu_display')[0].disabled = true;
             $('#danmu_speak')[0].disabled = true;
             $('#superchat_display')[0].disabled = true;
             $('#superchat_speak')[0].disabled = true;
+            $('#yubo_speak')[0].disabled = true;
             openSocket(method.data.getSocket(), "wss://broadcastlv.chat.bilibili.com:2245/sub", $("#roomid").val(), method.data.getTimer());
             $(this).html('断开');
         } else {
@@ -30,6 +32,7 @@ $(function () {
             $('#danmu_speak')[0].disabled = false;
             $('#superchat_display')[0].disabled = false;
             $('#superchat_speak')[0].disabled = false;
+            $('#yubo_speak')[0].disabled = false;
             $(this).html('连接');
         }
     });
@@ -55,6 +58,8 @@ let is_danmu_display_enabled = !0
 let is_danmu_tts_enabled = !1
 let is_superchat_display_enabled = !0
 let is_superchat_tts_enabled = !0
+let is_yubo_enabled = !0
+
 const method = {
     data: {
         timer: null,
@@ -158,11 +163,19 @@ const method = {
                 'name': data.info[2][1],
                 'message': data.info[1],
             }
-            if (is_danmu_display_enabled) {
+            if (is_yubo_enabled && data.info[2][1][0] == '羽' && data.info[3][0] == 21 && data.info[3][1] == '羽波') {
+                // 羽波，第一个字是'羽'，21级羽波牌子
+                danmu.name = '羽波';
                 method.danmus.push(danmu);
+                method.tts.push(`羽波说：${danmu.message}`);
             }
-            if (is_danmu_tts_enabled) {
-                method.tts.push(`${danmu.name}说：${danmu.message}`);
+            else {
+                if (is_danmu_display_enabled) {
+                    method.danmus.push(danmu);
+                }
+                if (is_danmu_tts_enabled) {
+                    method.tts.push(`${danmu.name}说：${danmu.message}`);
+                }
             }
         }
         else if (data.cmd.startsWith("SUPER_CHAT_MESSAGE")) {
